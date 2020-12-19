@@ -187,7 +187,19 @@ export function init({dispatcher, he, lineModel, lineSelectionModel,
             ([_, val]) => val // .length > 0
         );
 
-        const mkClass = () => `${props.supportsTokenConnect ? 'active' : ''} ${props.data.className}`;
+        // XXX: pass this as a prop, maybe?
+        const extraClasses = () => {
+            let classes = [];
+
+            attrs.forEach(([attr, val]) => {
+                if (attr === 'jazyk' && val === 'cizí jazyk')
+                    classes.push('foreign') ;
+            });
+
+            return classes.join(' ');
+        }
+
+        const mkClass = () => `${props.supportsTokenConnect ? 'active' : ''} ${props.data.className} ${extraClasses()}`;
 
         if (props.data.className === 'strc') {
             return <span className="strc">{props.data.text.join(' ')}</span>
