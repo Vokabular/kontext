@@ -183,15 +183,22 @@ export function init({dispatcher, he, lineModel, lineSelectionModel,
 
     }> = (props) => {
 
+        const posAttrTitleMap = {
+            'emendace': 'emendováno z',
+            'hl': 'hyperlemma',
+        };
+
         const attrs = zip(props.data.viewAttrs, props.data.tailPosAttrs).filter(
             ([_, val]) => val // .length > 0
+        ).map(([attr, val]) =>
+            [attr, posAttrTitleMap[attr] ? `${posAttrTitleMap[attr]} (${attr})` : attr, val]
         );
 
         // XXX: pass this as a prop, maybe?
         const extraClasses = () => {
             let classes = [];
 
-            attrs.forEach(([attr, val]) => {
+            attrs.forEach(([attr, _, val]) => {
                 if (attr === 'jazyk' && val === 'cizí jazyk')
                     classes.push('foreign') ;
             });
@@ -206,7 +213,7 @@ export function init({dispatcher, he, lineModel, lineSelectionModel,
 
         } else if (props.viewMode === ViewOptions.AttrViewMode.MOUSEOVER ||
                 props.viewMode === ViewOptions.AttrViewMode.VISIBLE_KWIC && !props.isKwic) {
-            const title = attrs.length > 0 ? attrs.map(([attr, val]) => `${attr}: ${val}`).join('\n') : "";
+            const title = attrs.length > 0 ? attrs.map(([_, attr, val]) => `${attr}: ${val}`).join('\n') : "";
             return <mark data-tokenid={props.tokenId} className={mkClass()} title={title}>{props.data.text.join(' ')}</mark>;
 
         } else {
@@ -227,7 +234,7 @@ export function init({dispatcher, he, lineModel, lineSelectionModel,
     // ------------------------- <TokenAttributes /> -------------------------
 
     const TokenAttributes: React.FC<{
-        attrs: Array<[string, string]>;
+        attrs: Array<[string, string, string]>;
         viewMode: ViewOptions.AttrViewMode;
 
     }> = (props) => {
@@ -237,10 +244,10 @@ export function init({dispatcher, he, lineModel, lineSelectionModel,
                 {props.viewMode !== ViewOptions.AttrViewMode.VISIBLE_MULTILINE ? ATTR_SEPARATOR : ''}
                 {
                     props.attrs.length > 0 ?
-                        props.attrs.map(([attr, val], i) =>
+                        props.attrs.map(([attr, friendly, val], i) =>
                             <React.Fragment key={attr}>
                                 {i !== 0 ? ATTR_SEPARATOR : ''}
-                                <span className={attr} title={attr}>{val}</span>
+                                <span className={attr} title={friendly}>{val}</span>
                             </React.Fragment>
                         ) :
                         EMPTY_ATTRS_PLACEHOLDER
