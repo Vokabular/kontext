@@ -443,6 +443,41 @@ table#conclines {
     mark.active {
         cursor: pointer;
     }
+
+    /* Vokabulář webový: custom styles for a token and positional attributes */
+    .foreign {
+        font-style: italic;
+    }
+
+    .attr {
+
+        span {
+            cursor: help;
+        }
+
+        .lemma {
+            color: red;
+        }
+
+        .hl { /* hyperlemma */
+            color: green;
+        }
+
+        .hlt { /* hyperlemma+tag */
+            color: blue;
+        }
+
+        .transliterace {
+            color: blue;
+        }
+
+        .emendace {
+            color: red;
+        }
+
+    }
+    /* /Vokabulář webový: custom styles for positional attributes */
+
 }
 
 table#conclines.safe {
